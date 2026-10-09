@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Provider Registration - FixMate</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        body {
+            background: #f5f7fb;
+        }
+
+        .register-container {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .register-box {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.10);
+        }
+
+        .register-box h1 {
+            text-align: center;
+            color: #1f4cff;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1f4cff;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #1f4cff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .register-btn:hover {
+            background: #0d2fb3;
+        }
+
+        .login-text {
+            text-align: center;
+            margin-top: 22px;
+            color: #666;
+        }
+
+        .login-text a {
+            color: #1f4cff;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .flash-message {
+            width: 90%;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .flash-message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .flash-message.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 50px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="logo">
+            FixMate
+        </a>
+    </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+<div class="register-container">
+
+    <div class="register-box">
+
+        <h1>👨‍🔧 Service Provider Registration</h1>
+
+        <p class="subtitle">
+            Create your FixMate Provider account
+        </p>
+
+
+        <form action="{{ url_for('provider_register') }}"
+              method="POST">
+
+            <!-- NAME -->
+            <div class="form-group">
+                <label>Full Name</label>
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter your full name"
+                    required>
+            </div>
+
+
+            <!-- EMAIL -->
+            <div class="form-group">
+                <label>Email Address</label>
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required>
+            </div>
+
+
+            <!-- PHONE -->
+            <div class="form-group">
+                <label>Phone Number</label>
+
+                <input
+                    type="tel"
+                    name="phone"
+                    placeholder="Enter 10-digit mobile number"
+                    maxlength="10"
+                    required>
+            </div>
+
+
+            <!-- SERVICE -->
+            <div class="form-group">
+                <label>Service / Skill</label>
+
+                <select name="service" required>
+
+                    <option value="">
+                        Select your service
+                    </option>
+
+                    <option value="Electrician">
+                        Electrician
+                    </option>
+
+                    <option value="Plumber">
+                        Plumber
+                    </option>
+
+                    <option value="Painter">
+                        Painter
+                    </option>
+
+                    <option value="Carpenter">
+                        Carpenter
+                    </option>
+
+                    <option value="AC Repair">
+                        AC Repair
+                    </option>
+
+                    <option value="House Cleaning">
+                        House Cleaning
+                    </option>
+
+                    <option value="Appliance Repair">
+                        Appliance Repair
+                    </option>
+
+                    <option value="Home Shifting">
+                        Home Shifting
+                    </option>
+
+                    <option value="Gardening">
+                        Gardening
+                    </option>
+
+                    <option value="Locksmith">
+                        Locksmith
+                    </option>
+
+                </select>
+            </div>
+
+
+            <!-- PASSWORD -->
+            <div class="form-group">
+
+                <label>Password</label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="Enter password"
+                        required>
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        onclick="togglePassword('password')">
+                        👁️
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+            <div class="form-group">
+
+                <label>Confirm Password</label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        name="confirm_password"
+                        id="confirm_password"
+                        placeholder="Confirm password"
+                        required>
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        onclick="togglePassword('confirm_password')">
+                        👁️
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <button type="submit"
+                    class="register-btn">
+
+                Register as Service Provider
+
+            </button>
+
+        </form>
+
+
+        <div class="login-text">
+
+            Already have an account?
+
+            <a href="{{ url_for('provider_login') }}">
+                Login as Service Provider
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

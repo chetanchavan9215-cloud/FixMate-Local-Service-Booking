@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Users - FixMate</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"
+            defer></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     ADMIN NAVBAR
+===================================================== -->
+
+<nav>
+
+    <h2>
+        🛠️ FixMate Admin
+    </h2>
+
+    <ul>
+
+        <li>
+            <a href="/admin">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="/admin/users">
+                Users
+            </a>
+        </li>
+
+        <li>
+            <a href="/logout">
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+
+<!-- =====================================================
+     USERS MANAGEMENT
+===================================================== -->
+
+<div class="login-container">
+
+    <div class="login-box">
+
+
+        <!-- ================= HEADING ================= -->
+
+        <h1>
+            👥 Manage Users
+        </h1>
+
+        <p>
+            View and manage registered FixMate users.
+        </p>
+
+
+        <hr>
+
+
+
+        <!-- ================= FLASH MESSAGES ================= -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+
+        <!-- ================= TOTAL USERS ================= -->
+
+        <div class="summary-card">
+
+            <h3>
+                👥 Total Registered Users
+            </h3>
+
+            <h1>
+                {{ total_users }}
+            </h1>
+
+        </div>
+
+
+        <hr>
+
+
+
+        <!-- ================= SEARCH ================= -->
+
+        <h3>
+            🔍 Search Users
+        </h3>
+
+
+        <form action="/admin/users"
+              method="GET">
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Search by name..."
+                value="{{ search }}"
+            >
+
+            <button type="submit">
+                🔍 Search
+            </button>
+
+        </form>
+
+
+        <br>
+
+
+
+        <!-- ================= CLEAR SEARCH ================= -->
+
+        {% if search %}
+
+            <a href="/admin/users">
+
+                <button type="button">
+                    ✖️ Clear Search
+                </button>
+
+            </a>
+
+            <br><br>
+
+        {% endif %}
+
+
+
+        <!-- =================================================
+             USERS TABLE
+        ================================================= -->
+
+        {% if users %}
+
+            <div class="booking-table-container">
+
+                <table class="booking-table">
+
+
+                    <!-- ================= HEADER ================= -->
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+
+
+                    <!-- ================= USERS ================= -->
+
+                    {% for user in users %}
+
+                    <tr>
+
+                        <!-- USER ID -->
+
+                        <td>
+                            #{{ user[0] }}
+                        </td>
+
+
+                        <!-- USER NAME -->
+
+                        <td>
+                            {{ user[1] }}
+                        </td>
+
+
+                        <!-- DELETE -->
+
+                        <td>
+
+                            <a
+                                href="/admin/user/delete/{{ user[0] }}"
+                                onclick="return confirmDeleteUser()"
+                            >
+
+                                <button type="button">
+                                    🗑️ Delete
+                                </button>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                </table>
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- ================= NO USERS ================= -->
+
+            <div class="flash-message">
+
+                📭 No users found.
+
+            </div>
+
+
+        {% endif %}
+
+
+
+        <br><br>
+
+
+
+        <!-- ================= BACK ================= -->
+
+        <a href="/admin">
+
+            <button type="button">
+                ⬅️ Back to Admin Dashboard
+            </button>
+
+        </a>
+
+
+        <br><br>
+
+
+
+        <!-- ================= REFRESH ================= -->
+
+        <a href="/admin/users">
+
+            <button type="button">
+                🔄 Refresh Users
+            </button>
+
+        </a>
+
+
+        <br><br>
+
+
+
+        <!-- ================= LOGOUT ================= -->
+
+        <a href="/logout">
+
+            <button type="button">
+                🚪 Logout
+            </button>
+
+        </a>
+
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

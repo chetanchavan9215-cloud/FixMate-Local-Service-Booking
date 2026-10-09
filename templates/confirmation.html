@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Booking Confirmed - FixMate</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7ff;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 520px;
+            margin: 50px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+
+        .title {
+            text-align: center;
+            color: #1f4cff;
+            margin-bottom: 10px;
+        }
+
+        .success-icon {
+            text-align: center;
+            font-size: 45px;
+        }
+
+        .message {
+            text-align: center;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .booking-id {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .detail {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 14px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .value {
+            color: #555;
+            text-align: right;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 14px;
+            border-radius: 20px;
+            background: #fff3cd;
+            color: #856404;
+            font-weight: bold;
+        }
+
+        .buttons {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            padding: 13px;
+            border-radius: 8px;
+            background: #1f4cff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #0d2fb3;
+        }
+
+        .home-btn {
+            background: #555;
+        }
+
+        .home-btn:hover {
+            background: #333;
+        }
+
+        @media (max-width: 500px) {
+
+            .container {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .detail {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .value {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="success-icon">
+            ✅
+        </div>
+
+        <h1 class="title">
+            Booking Confirmed!
+        </h1>
+
+        <p class="message">
+            Your service booking has been successfully created.
+        </p>
+
+        <!-- BOOKING ID -->
+        <div class="booking-id">
+            Booking ID: {{ booking[0] }}
+        </div>
+
+        <!-- NAME -->
+        <div class="detail">
+            <span class="label">Name:</span>
+            <span class="value">
+                {{ booking[1] }}
+            </span>
+        </div>
+
+        <!-- PHONE -->
+        <div class="detail">
+            <span class="label">Phone:</span>
+            <span class="value">
+                {{ booking[2] }}
+            </span>
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="detail">
+            <span class="label">Address:</span>
+            <span class="value">
+                {{ booking[3] }}
+            </span>
+        </div>
+
+        <!-- SERVICE -->
+        <div class="detail">
+            <span class="label">Service:</span>
+            <span class="value">
+                {{ booking[4] }}
+            </span>
+        </div>
+
+        <!-- DATE -->
+        <div class="detail">
+            <span class="label">Date:</span>
+            <span class="value">
+                {{ booking[7] }}
+            </span>
+        </div>
+
+        <!-- TIME -->
+        <div class="detail">
+            <span class="label">Time:</span>
+            <span class="value">
+                {{ booking[8] }}
+            </span>
+        </div>
+
+        <!-- BOOKING STATUS -->
+        <div class="detail">
+            <span class="label">Status:</span>
+
+            <span class="value">
+                <span class="status">
+                    🟡 {{ booking[6] }}
+                </span>
+            </span>
+        </div>
+
+        <div class="buttons">
+
+            <a href="/mybookings" class="btn">
+                📋 View My Bookings
+            </a>
+
+            <a href="/dashboard" class="btn">
+                🏠 Go to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

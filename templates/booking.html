@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book a Service - FixMate</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          crossorigin="">
+
+    <style>
+
+        /* =========================================
+           LOCATION SECTION
+        ========================================= */
+
+        .location-section {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .location-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .location-help {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================
+           ADDRESS SEARCH
+        ========================================= */
+
+        .address-search-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .address-search-row input {
+            flex: 1;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .search-location-btn {
+            width: auto !important;
+            min-width: 150px;
+            margin: 0 !important;
+            padding: 11px 14px;
+            border: none;
+            border-radius: 8px;
+            background: #1f4cff;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .search-location-btn:hover {
+            background: #1539c7;
+        }
+
+
+        /* =========================================
+           SEARCH RESULTS
+        ========================================= */
+
+        #searchResults {
+            display: none;
+            margin-top: 8px;
+            background: white;
+            border: 1px solid #d9dfea;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .search-result-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eeeeee;
+            cursor: pointer;
+            font-size: 13px;
+            color: #333;
+            background: white;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: #f1f5ff;
+        }
+
+
+        /* =========================================
+           MAP
+        ========================================= */
+
+        #map {
+            width: 100%;
+            height: 400px;
+            border-radius: 12px;
+            border: 1px solid #d9dfea;
+            overflow: hidden;
+            margin-top: 10px;
+            z-index: 1;
+        }
+
+
+        /* =========================================
+           CURRENT LOCATION BUTTON
+        ========================================= */
+
+        .location-button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 11px;
+            border: none;
+            border-radius: 8px;
+            background: #1f4cff;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .location-button:hover {
+            background: #1539c7;
+        }
+
+
+        /* =========================================
+           STATUS
+        ========================================= */
+
+        .location-status {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #f1f5ff;
+            color: #334155;
+            border: 1px solid #dbe4ff;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .location-status.selected {
+            background: #ecfdf5;
+            color: #047857;
+            border-color: #a7f3d0;
+        }
+
+        .location-status.error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+
+        /* =========================================
+           COORDINATES
+        ========================================= */
+
+        .coordinates-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .coordinates-box input {
+            flex: 1;
+            background: #f8fafc;
+            color: #475569;
+            font-size: 12px;
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 600px) {
+
+            .address-search-row {
+                flex-direction: column;
+            }
+
+            .search-location-btn {
+                width: 100% !important;
+            }
+
+            #map {
+                height: 350px;
+            }
+
+            .coordinates-box {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav>
+    <h2>FixMate</h2>
+</nav>
+
+
+<div class="login-container">
+
+    <form class="login-box"
+          action="/book"
+          method="POST"
+          onsubmit="return validateBooking()">
+
+
+        <h2>🛠️ Book a Service</h2>
+
+
+        <!-- =====================================
+             NAME
+        ====================================== -->
+
+        <input type="text"
+               name="name"
+               placeholder="Enter Your Name"
+               required>
+
+
+        <!-- =====================================
+             PHONE
+        ====================================== -->
+
+        <input type="tel"
+               name="phone"
+               placeholder="Enter Mobile Number"
+               pattern="[0-9]{10}"
+               maxlength="10"
+               required>
+
+
+        <!-- =====================================
+             SERVICE ADDRESS
+        ====================================== -->
+
+        <label style="
+            display:block;
+            margin-top:15px;
+            margin-bottom:8px;
+            text-align:left;
+            font-weight:700;
+        ">
+
+            📍 Service Address
+
+        </label>
+
+
+        <div class="address-search-row">
+
+            <input type="text"
+                   id="address"
+                   name="address"
+                   placeholder="Enter location e.g. Panshet"
+                   autocomplete="off"
+                   required>
+
+
+            <button type="button"
+                    class="search-location-btn"
+                    onclick="searchLocation()">
+
+                🔎 Search Location
+
+            </button>
+
+        </div>
+
+
+        <!-- SEARCH RESULTS -->
+
+        <div id="searchResults"></div>
+
+
+        <!-- =====================================
+             SERVICE
+        ====================================== -->
+
+        <select name="service" required>
+
+            <option value="">Select Service</option>
+
+            <option value="Electrician">
+                Electrician
+            </option>
+
+            <option value="Plumber">
+                Plumber
+            </option>
+
+            <option value="Painter">
+                Painter
+            </option>
+
+            <option value="Carpenter">
+                Carpenter
+            </option>
+
+            <option value="AC Repair">
+                AC Repair
+            </option>
+
+            <option value="House Cleaning">
+                House Cleaning
+            </option>
+
+            <option value="Appliance Repair">
+                Appliance Repair
+            </option>
+
+            <option value="Home Shifting">
+                Home Shifting
+            </option>
+
+            <option value="Gardening">
+                Gardening
+            </option>
+
+            <option value="Locksmith">
+                Locksmith
+            </option>
+
+        </select>
+
+
+        <!-- =====================================
+             DATE
+        ====================================== -->
+
+        <label for="date"
+               style="
+               display:block;
+               margin-top:15px;
+               text-align:left;
+               ">
+
+            📅 Select Service Date
+
+        </label>
+
+
+        <input type="date"
+               id="date"
+               name="date"
+               required>
+
+
+        <!-- =====================================
+             TIME
+        ====================================== -->
+
+        <label for="time"
+               style="
+               display:block;
+               margin-top:15px;
+               text-align:left;
+               ">
+
+            ⏰ Select Service Time
+
+        </label>
+
+
+        <input type="time"
+               id="time"
+               name="time"
+               min="09:00"
+               max="18:00"
+               required>
+
+
+        <!-- =====================================
+             LOCATION SECTION
+        ====================================== -->
+
+        <div class="location-section">
+
+
+            <div class="location-title">
+
+                📍 Select Service Location
+
+            </div>
+
+
+            <div class="location-help">
+
+                Address मध्ये location लिहा आणि
+                <strong>Search Location</strong> दाबा.
+
+                किंवा map वर directly click करून
+                exact location select करा.
+
+            </div>
+
+
+            <!-- =================================
+                 MAP
+            ================================== -->
+
+            <div id="map"></div>
+
+
+            <!-- =================================
+                 CURRENT LOCATION
+            ================================== -->
+
+            <button type="button"
+                    class="location-button"
+                    onclick="useMyLocation()">
+
+                📍 Use My Current Location
+
+            </button>
+
+
+            <!-- =================================
+                 STATUS
+            ================================== -->
+
+            <div id="locationStatus"
+                 class="location-status">
+
+                ⚠️ Please select your service location
+                on the map.
+
+            </div>
+
+
+            <!-- =================================
+                 HIDDEN LATITUDE
+            ================================== -->
+
+            <input type="hidden"
+                   id="latitude"
+                   name="latitude">
+
+
+            <!-- =================================
+                 HIDDEN LONGITUDE
+            ================================== -->
+
+            <input type="hidden"
+                   id="longitude"
+                   name="longitude">
+
+
+            <!-- =================================
+                 COORDINATES
+            ================================== -->
+
+            <div class="coordinates-box">
+
+                <input type="text"
+                       id="latitudeDisplay"
+                       placeholder="Latitude"
+                       readonly>
+
+
+                <input type="text"
+                       id="longitudeDisplay"
+                       placeholder="Longitude"
+                       readonly>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================
+             BOOK BUTTON
+        ====================================== -->
+
+        <button type="submit">
+
+            🛠️ Book Now
+
+        </button>
+
+
+        <!-- =====================================
+             BACK TO DASHBOARD
+        ====================================== -->
+
+        <a href="/dashboard"
+           style="
+           display:block;
+           margin-top:15px;
+           text-decoration:none;
+           ">
+
+            <button type="button">
+
+                🏠 Back to Dashboard
+
+            </button>
+
+        </a>
+
+
+        <!-- =====================================
+             SERVICE TIME
+        ====================================== -->
+
+        <p style="
+            margin-top:15px;
+            color:#666;
+        ">
+
+            Service available:
+            <strong>9:00 AM - 6:00 PM</strong>
+
+        </p>
+
+
+    </form>
+
+</div>
+
+
+<!-- =========================================
+     LEAFLET JAVASCRIPT
+========================================= -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        crossorigin="">
+</script>
+
+
+<script>
+
+
+/* =========================================
+   DEFAULT MAP
+========================================= */
+
+const defaultLatitude = 20.5937;
+const defaultLongitude = 78.9629;
+
+
+const map = L.map("map").setView(
+    [
+        defaultLatitude,
+        defaultLongitude
+    ],
+    5
+);
+
+
+/* =========================================
+   OPENSTREETMAP TILES
+========================================= */
+
+L.tileLayer(
+    "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        maxZoom: 19,
+
+        attribution:
+            "&copy; OpenStreetMap contributors"
+    }
+).addTo(map);
+
+
+/* =========================================
+   VARIABLES
+========================================= */
+
+let selectedMarker = null;
+
+
+const addressInput =
+    document.getElementById("address");
+
+
+const latitudeInput =
+    document.getElementById("latitude");
+
+
+const longitudeInput =
+    document.getElementById("longitude");
+
+
+const latitudeDisplay =
+    document.getElementById("latitudeDisplay");
+
+
+const longitudeDisplay =
+    document.getElementById("longitudeDisplay");
+
+
+const locationStatus =
+    document.getElementById("locationStatus");
+
+
+const searchResults =
+    document.getElementById("searchResults");
+
+
+/* =========================================
+   SET LOCATION
+========================================= */
+
+function setLocation(
+    latitude,
+    longitude,
+    addressText = ""
+) {
+
+
+    latitude =
+        Number(latitude);
+
+
+    longitude =
+        Number(longitude);
+
+
+    /* SAVE LATITUDE */
+
+    latitudeInput.value =
+        latitude.toFixed(6);
+
+
+    /* SAVE LONGITUDE */
+
+    longitudeInput.value =
+        longitude.toFixed(6);
+
+
+    /* DISPLAY LATITUDE */
+
+    latitudeDisplay.value =
+        latitude.toFixed(6);
+
+
+    /* DISPLAY LONGITUDE */
+
+    longitudeDisplay.value =
+        longitude.toFixed(6);
+
+
+    /* ADDRESS */
+
+    if (addressText !== "") {
+
+        addressInput.value =
+            addressText;
+
+    }
+
+
+    /* REMOVE OLD MARKER */
+
+    if (selectedMarker) {
+
+        map.removeLayer(
+            selectedMarker
+        );
+
+    }
+
+
+    /* CREATE MARKER */
+
+    selectedMarker =
+        L.marker(
+            [
+                latitude,
+                longitude
+            ]
+        ).addTo(map);
+
+
+    /* POPUP */
+
+    selectedMarker
+        .bindPopup(
+            "📍 Service Location"
+        )
+        .openPopup();
+
+
+    /* MOVE MAP */
+
+    map.flyTo(
+        [
+            latitude,
+            longitude
+        ],
+        16,
+        {
+            animate: true,
+            duration: 1.2
+        }
+    );
+
+
+    /* MAP SIZE */
+
+    setTimeout(
+        function() {
+
+            map.invalidateSize();
+
+        },
+        300
+    );
+
+
+    /* STATUS */
+
+    locationStatus.textContent =
+        "✅ Service location selected successfully.";
+
+
+    locationStatus.classList.remove(
+        "error"
+    );
+
+
+    locationStatus.classList.add(
+        "selected"
+    );
+
+
+    /* HIDE SEARCH RESULTS */
+
+    searchResults.style.display =
+        "none";
+
+}
+
+
+/* =========================================
+   SEARCH LOCATION
+========================================= */
+
+async function searchLocation() {
+
+
+    const address =
+        addressInput.value.trim();
+
+
+    if (address === "") {
+
+        alert(
+            "Please enter a location first."
+        );
+
+        addressInput.focus();
+
+        return;
+
+    }
+
+
+    locationStatus.textContent =
+        "🔎 Searching for " +
+        address +
+        "...";
+
+
+    locationStatus.classList.remove(
+        "selected"
+    );
+
+
+    locationStatus.classList.remove(
+        "error"
+    );
+
+
+    searchResults.style.display =
+        "none";
+
+
+    try {
+
+
+        /*
+         * SEARCH 1
+         *
+         * User's exact text
+         */
+
+        let query =
+            address;
+
+
+        let url =
+            "https://nominatim.openstreetmap.org/search" +
+            "?format=json" +
+            "&q=" +
+            encodeURIComponent(query) +
+            "&limit=10" +
+            "&addressdetails=1";
+
+
+        let response =
+            await fetch(url);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Search request failed"
+            );
+
+        }
+
+
+        let results =
+            await response.json();
+
+
+        /*
+         * SEARCH 2
+         *
+         * Maharashtra + India
+         */
+
+        if (
+            !results ||
+            results.length === 0
+        ) {
+
+
+            query =
+                address +
+                ", Maharashtra, India";
+
+
+            url =
+                "https://nominatim.openstreetmap.org/search" +
+                "?format=json" +
+                "&q=" +
+                encodeURIComponent(query) +
+                "&limit=10" +
+                "&addressdetails=1";
+
+
+            response =
+                await fetch(url);
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Second search failed"
+                );
+
+            }
+
+
+            results =
+                await response.json();
+
+        }
+
+
+        /*
+         * NO RESULT
+         */
+
+        if (
+            !results ||
+            results.length === 0
+        ) {
+
+            locationStatus.textContent =
+                "❌ Location not found.";
+
+
+            locationStatus.classList.add(
+                "error"
+            );
+
+
+            alert(
+                "Location not found. Try Panshet, Pune or another nearby place."
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+         * SHOW RESULTS
+         *
+         * User can choose correct one.
+         */
+
+        searchResults.innerHTML =
+            "";
+
+
+        results.slice(0, 5).forEach(
+            function(result) {
+
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "search-result-item";
+
+
+                item.textContent =
+                    "📍 " +
+                    result.display_name;
+
+
+                item.onclick =
+                    function() {
+
+
+                        const latitude =
+                            parseFloat(
+                                result.lat
+                            );
+
+
+                        const longitude =
+                            parseFloat(
+                                result.lon
+                            );
+
+
+                        setLocation(
+                            latitude,
+                            longitude,
+                            result.display_name
+                        );
+
+                    };
+
+
+                searchResults.appendChild(
+                    item
+                );
+
+            }
+        );
+
+
+        searchResults.style.display =
+            "block";
+
+
+        /*
+         * IF ONLY ONE RESULT
+         *
+         * Automatically select it.
+         */
+
+        if (results.length === 1) {
+
+
+            const result =
+                results[0];
+
+
+            setLocation(
+                parseFloat(result.lat),
+                parseFloat(result.lon),
+                result.display_name
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+         * FIRST RESULT PREVIEW
+         */
+
+        const firstResult =
+            results[0];
+
+
+        map.flyTo(
+            [
+                parseFloat(
+                    firstResult.lat
+                ),
+                parseFloat(
+                    firstResult.lon
+                )
+            ],
+            13,
+            {
+                animate: true,
+                duration: 1.2
+            }
+        );
+
+
+        locationStatus.textContent =
+            "📍 Select the correct location from the search results.";
+
+
+    } catch (error) {
+
+
+        console.error(
+            "Location search error:",
+            error
+        );
+
+
+        locationStatus.textContent =
+            "❌ Location search failed.";
+
+
+        locationStatus.classList.remove(
+            "selected"
+        );
+
+
+        locationStatus.classList.add(
+            "error"
+        );
+
+
+        alert(
+            "Location search is temporarily unavailable. You can still select the exact location by clicking on the map."
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   ENTER KEY SEARCH
+========================================= */
+
+addressInput.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            event.preventDefault();
+
+            searchLocation();
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   MAP CLICK
+========================================= */
+
+map.on(
+    "click",
+    function(event) {
+
+
+        const latitude =
+            event.latlng.lat;
+
+
+        const longitude =
+            event.latlng.lng;
+
+
+        setLocation(
+            latitude,
+            longitude
+        );
+
+
+        /*
+         * Keep typed address if available.
+         *
+         * If address is empty, show coordinates.
+         */
+
+        if (
+            addressInput.value.trim() === ""
+        ) {
+
+            addressInput.value =
+                "Selected map location";
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   CURRENT LOCATION
+========================================= */
+
+function useMyLocation() {
+
+
+    if (
+        !navigator.geolocation
+    ) {
+
+        alert(
+            "❌ Your browser does not support location services."
+        );
+
+        return;
+
+    }
+
+
+    locationStatus.textContent =
+        "📍 Getting your current location...";
+
+
+    locationStatus.classList.remove(
+        "selected"
+    );
+
+
+    locationStatus.classList.remove(
+        "error"
+    );
+
+
+    navigator.geolocation.getCurrentPosition(
+
+
+        async function(position) {
+
+
+            const latitude =
+                position.coords.latitude;
+
+
+            const longitude =
+                position.coords.longitude;
+
+
+            /*
+             * FIRST SET GPS LOCATION
+             */
+
+            setLocation(
+                latitude,
+                longitude
+            );
+
+
+            /*
+             * REVERSE GEOCODING
+             */
+
+            try {
+
+
+                const url =
+                    "https://nominatim.openstreetmap.org/reverse" +
+                    "?format=json" +
+                    "&lat=" +
+                    latitude +
+                    "&lon=" +
+                    longitude +
+                    "&zoom=18" +
+                    "&addressdetails=1";
+
+
+                const response =
+                    await fetch(url);
+
+
+                if (
+                    response.ok
+                ) {
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (
+                        data &&
+                        data.display_name
+                    ) {
+
+
+                        addressInput.value =
+                            data.display_name;
+
+
+                    }
+
+                }
+
+
+            } catch (error) {
+
+
+                console.log(
+                    "Reverse geocoding unavailable"
+                );
+
+            }
+
+
+        },
+
+
+        function(error) {
+
+
+            console.log(
+                "GPS Error:",
+                error
+            );
+
+
+            locationStatus.textContent =
+                "❌ Could not get your current location.";
+
+
+            locationStatus.classList.remove(
+                "selected"
+            );
+
+
+            locationStatus.classList.add(
+                "error"
+            );
+
+
+            alert(
+                "Please allow location permission in your browser, or select the location manually on the map."
+            );
+
+        },
+
+
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+
+    );
+
+}
+
+
+/* =========================================
+   TODAY DATE
+========================================= */
+
+function getTodayDate() {
+
+
+    const today =
+        new Date();
+
+
+    const year =
+        today.getFullYear();
+
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+/* =========================================
+   MINIMUM DATE
+========================================= */
+
+const dateInput =
+    document.getElementById(
+        "date"
+    );
+
+
+dateInput.setAttribute(
+    "min",
+    getTodayDate()
+);
+
+
+/* =========================================
+   VALIDATE BOOKING
+========================================= */
+
+function validateBooking() {
+
+
+    const selectedDate =
+        document.getElementById(
+            "date"
+        ).value;
+
+
+    const selectedTime =
+        document.getElementById(
+            "time"
+        ).value;
+
+
+    /* DATE CHECK */
+
+    if (
+        selectedDate === ""
+    ) {
+
+        alert(
+            "Please select a service date."
+        );
+
+        return false;
+
+    }
+
+
+    /* PAST DATE */
+
+    const today =
+        getTodayDate();
+
+
+    if (
+        selectedDate < today
+    ) {
+
+        alert(
+            "❌ Past date is not allowed."
+        );
+
+        return false;
+
+    }
+
+
+    /* TIME CHECK */
+
+    if (
+        selectedTime === ""
+    ) {
+
+        alert(
+            "Please select a service time."
+        );
+
+        return false;
+
+    }
+
+
+    const timeParts =
+        selectedTime.split(":");
+
+
+    const hours =
+        parseInt(
+            timeParts[0]
+        );
+
+
+    const minutes =
+        parseInt(
+            timeParts[1]
+        );
+
+
+    const totalMinutes =
+        (
+            hours * 60
+        ) +
+        minutes;
+
+
+    const openingTime =
+        9 * 60;
+
+
+    const closingTime =
+        18 * 60;
+
+
+    if (
+        totalMinutes <
+        openingTime
+        ||
+        totalMinutes >
+        closingTime
+    ) {
+
+        alert(
+            "❌ Service time must be between 9:00 AM and 6:00 PM."
+        );
+
+        return false;
+
+    }
+
+
+    /* TODAY TIME CHECK */
+
+    if (
+        selectedDate === today
+    ) {
+
+
+        const now =
+            new Date();
+
+
+        const currentMinutes =
+            (
+                now.getHours() * 60
+            ) +
+            now.getMinutes();
+
+
+        if (
+            totalMinutes <=
+            currentMinutes
+        ) {
+
+            alert(
+                "❌ For today's booking, please select a future time."
+            );
+
+            return false;
+
+        }
+
+    }
+
+
+    /* LOCATION CHECK */
+
+    const latitude =
+        latitudeInput.value;
+
+
+    const longitude =
+        longitudeInput.value;
+
+
+    if (
+        latitude === ""
+        ||
+        longitude === ""
+    ) {
+
+
+        locationStatus.textContent =
+            "❌ Please select your service location on the map.";
+
+
+        locationStatus.classList.remove(
+            "selected"
+        );
+
+
+        locationStatus.classList.add(
+            "error"
+        );
+
+
+        alert(
+            "📍 Please select your service location on the map before booking."
+        );
+
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================================
+   INITIAL MAP SIZE FIX
+========================================= */
+
+setTimeout(
+    function() {
+
+        map.invalidateSize();
+
+    },
+    500
+);
+
+
+/* =========================================
+   WINDOW RESIZE FIX
+========================================= */
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        map.invalidateSize();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

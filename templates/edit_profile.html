@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Profile - FixMate</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<nav>
+
+    <h2>FixMate</h2>
+
+    <ul>
+
+        <li>
+            <a href="/dashboard">Dashboard</a>
+        </li>
+
+        <li>
+            <a href="/mybookings">My Bookings</a>
+        </li>
+
+        <li>
+            <a href="/profile">Profile</a>
+        </li>
+
+        <li>
+            <a href="/logout">Logout</a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<div class="login-container">
+
+    <div class="login-box">
+
+        <h1>✏️ Edit Profile</h1>
+
+        <p>Update your account details.</p>
+
+        <hr>
+
+
+        <form method="POST">
+
+
+            <input type="text"
+                   name="name"
+                   placeholder="Enter your name"
+                   value="{{ user[1] }}"
+                   required>
+
+
+            <input type="email"
+                   name="email"
+                   placeholder="Enter your email"
+                   value="{{ user[2] }}"
+                   required>
+
+
+            <button type="submit">
+                💾 Save Changes
+            </button>
+
+
+        </form>
+
+
+        <br>
+
+
+        <a href="/profile">
+
+            <button type="button">
+                ← Back to Profile
+            </button>
+
+        </a>
+
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

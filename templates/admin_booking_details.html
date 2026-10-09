@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Booking Details - FixMate</title>
+
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7ff;
+            color: #172033;
+        }
+
+
+        /* ==============================
+           NAVBAR
+        ============================== */
+
+        .navbar {
+            background: #1f4cff;
+            color: white;
+            padding: 18px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 3px 12px rgba(31, 76, 255, 0.18);
+        }
+
+
+        /* ==============================
+           CONTAINER
+        ============================== */
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+
+        /* ==============================
+           MAIN CARD
+        ============================== */
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e7ebf4;
+        }
+
+
+        /* ==============================
+           TITLE
+        ============================== */
+
+        h1 {
+            color: #1f4cff;
+            margin: 0 0 28px;
+            font-size: 27px;
+        }
+
+
+        /* ==============================
+           SECTION
+        ============================== */
+
+        .section {
+            margin-top: 10px;
+            margin-bottom: 28px;
+        }
+
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: #eef2ff;
+            color: #1f4cff;
+            padding: 13px 16px;
+            border-radius: 10px;
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+
+        /* ==============================
+           DETAIL ROW
+        ============================== */
+
+        .detail {
+            padding: 14px 4px;
+            border-bottom: 1px solid #eeeeee;
+            font-size: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+
+        .detail:last-child {
+            border-bottom: none;
+        }
+
+
+        .detail > strong {
+            display: inline-block;
+            width: 180px;
+            min-width: 180px;
+            color: #333;
+        }
+
+
+        /* ==============================
+           STATUS
+        ============================== */
+
+        .completed {
+            color: #16803c;
+            font-weight: bold;
+        }
+
+
+        .pending {
+            color: #d58b00;
+            font-weight: bold;
+        }
+
+
+        .cancelled {
+            color: #d62828;
+            font-weight: bold;
+        }
+
+
+        .accepted {
+            color: #1f4cff;
+            font-weight: bold;
+        }
+
+
+        /* ==============================
+           PROVIDER BOX
+        ============================== */
+
+        .provider-info {
+            width: 100%;
+            background: #f4f7ff;
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid #e1e7f5;
+        }
+
+
+        .provider-info .provider-row {
+            padding: 11px 0;
+            border-bottom: 1px solid #e3e7f0;
+            font-size: 16px;
+        }
+
+
+        .provider-info .provider-row:last-child {
+            border-bottom: none;
+        }
+
+
+        .provider-row strong {
+            display: inline-block;
+            width: 100px;
+            color: #333;
+        }
+
+
+        .not-assigned {
+            color: #777;
+            font-weight: bold;
+            display: block;
+            padding: 12px 0;
+        }
+
+
+        /* ==============================
+           LOCATION BOX
+        ============================== */
+
+        .location-box {
+            margin-top: 15px;
+            background: #f8faff;
+            border: 1px solid #e1e7f5;
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+
+        .location-heading {
+            font-size: 17px;
+            font-weight: bold;
+            color: #1f4cff;
+            margin-bottom: 10px;
+        }
+
+
+        .location-text {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+
+        /* ==============================
+           MAP
+        ============================== */
+
+        #adminBookingMap {
+            width: 100%;
+            height: 320px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #dbe2f0;
+            z-index: 1;
+        }
+
+
+        /* ==============================
+           COORDINATES
+        ============================== */
+
+        .coordinates {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+
+        .coordinate-item {
+            flex: 1;
+            background: white;
+            border: 1px solid #e1e7f5;
+            border-radius: 8px;
+            padding: 9px;
+            font-size: 12px;
+            color: #475569;
+        }
+
+
+        .coordinate-item strong {
+            display: block;
+            color: #334155;
+            margin-bottom: 3px;
+        }
+
+
+        /* ==============================
+           GOOGLE MAP BUTTON
+        ============================== */
+
+        .map-button {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 11px 16px;
+            background: #1f4cff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s ease;
+        }
+
+
+        .map-button:hover {
+            background: #0d2fb3;
+            transform: translateY(-1px);
+        }
+
+
+        /* ==============================
+           NO LOCATION
+        ============================== */
+
+        .no-location {
+            padding: 15px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 9px;
+            color: #9a3412;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+
+        /* ==============================
+           BACK BUTTON
+        ============================== */
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 12px 20px;
+            background: #1f4cff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.2s ease;
+        }
+
+
+        .back-btn:hover {
+            background: #0d2fb3;
+            transform: translateY(-1px);
+        }
+
+
+        /* ==============================
+           MOBILE
+        ============================== */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 16px 20px;
+                font-size: 21px;
+            }
+
+
+            .container {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+
+            .card {
+                padding: 20px;
+            }
+
+
+            h1 {
+                font-size: 23px;
+            }
+
+
+            .detail {
+                display: block;
+            }
+
+
+            .detail > strong {
+                display: block;
+                width: auto;
+                min-width: auto;
+                margin-bottom: 6px;
+            }
+
+
+            .provider-row strong {
+                width: 80px;
+            }
+
+
+            #adminBookingMap {
+                height: 270px;
+            }
+
+
+            .coordinates {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==============================
+         NAVBAR
+    ============================== -->
+
+    <div class="navbar">
+        🔧 FixMate - Admin
+    </div>
+
+
+    <div class="container">
+
+        <div class="card">
+
+
+            <!-- ==============================
+                 TITLE
+            ============================== -->
+
+            <h1>
+                📋 Booking Details
+            </h1>
+
+
+            <!-- ==============================
+                 USER BOOKING DETAILS
+            ============================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    👤 User Booking Details
+                </div>
+
+
+                <!-- BOOKING ID -->
+
+                <div class="detail">
+
+                    <strong>
+                        Booking ID:
+                    </strong>
+
+                    <span>
+                        #{{ booking["id"] }}
+                    </span>
+
+                </div>
+
+
+                <!-- CUSTOMER NAME -->
+
+                <div class="detail">
+
+                    <strong>
+                        Name:
+                    </strong>
+
+                    <span>
+                        {{ booking["name"] }}
+                    </span>
+
+                </div>
+
+
+                <!-- CUSTOMER PHONE -->
+
+                <div class="detail">
+
+                    <strong>
+                        Phone:
+                    </strong>
+
+                    <span>
+                        {{ booking["phone"] }}
+                    </span>
+
+                </div>
+
+
+                <!-- ADDRESS -->
+
+                <div class="detail">
+
+                    <strong>
+                        Address:
+                    </strong>
+
+                    <span>
+                        {{ booking["address"] }}
+                    </span>
+
+                </div>
+
+
+                <!-- SERVICE -->
+
+                <div class="detail">
+
+                    <strong>
+                        Service:
+                    </strong>
+
+                    <span>
+                        {{ booking["service"] }}
+                    </span>
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="detail">
+
+                    <strong>
+                        Date:
+                    </strong>
+
+                    <span>
+                        {{ booking["date"] }}
+                    </span>
+
+                </div>
+
+
+                <!-- TIME -->
+
+                <div class="detail">
+
+                    <strong>
+                        Time:
+                    </strong>
+
+                    <span>
+                        {{ booking["time"] }}
+                    </span>
+
+                </div>
+
+
+                <!-- BOOKING STATUS -->
+
+                <div class="detail">
+
+                    <strong>
+                        Booking Status:
+                    </strong>
+
+
+                    {% if booking["status"] == "Completed" %}
+
+                        <span class="completed">
+                            🟢 Completed
+                        </span>
+
+
+                    {% elif booking["status"] == "Cancelled" %}
+
+                        <span class="cancelled">
+                            🔴 Cancelled
+                        </span>
+
+
+                    {% elif booking["status"] == "Pending" %}
+
+                        <span class="pending">
+                            🟡 Pending
+                        </span>
+
+
+                    {% else %}
+
+                        <span class="pending">
+                            🟡 {{ booking["status"] }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- ==============================
+                 CUSTOMER SELECTED LOCATION
+            ============================== -->
+
+            <div class="section">
+
+                {% if booking["latitude"] and booking["longitude"] %}
+
+                    <div class="location-box">
+
+
+                        <div class="location-heading">
+                            📍 Customer Selected Location
+                        </div>
+
+
+                        <div class="location-text">
+
+                            This is the exact location selected
+                            by the customer while booking the service.
+
+                        </div>
+
+
+                        <!-- MAP -->
+
+                        <div id="adminBookingMap"></div>
+
+
+                        <!-- COORDINATES -->
+
+                        <div class="coordinates">
+
+                            <div class="coordinate-item">
+
+                                <strong>
+                                    Latitude
+                                </strong>
+
+                                {{ booking["latitude"] }}
+
+                            </div>
+
+
+                            <div class="coordinate-item">
+
+                                <strong>
+                                    Longitude
+                                </strong>
+
+                                {{ booking["longitude"] }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- GOOGLE MAP -->
+
+                        <a
+                            href="https://www.google.com/maps/search/?api=1&query={{ booking['latitude'] }},{{ booking['longitude'] }}"
+                            target="_blank"
+                            class="map-button">
+
+                            🗺️ Open Location in Google Maps
+
+                        </a>
+
+                    </div>
+
+
+                {% else %}
+
+                    <div class="no-location">
+
+                        📍 Location was not selected for this booking.
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ==============================
+                 SERVICE PROVIDER DETAILS
+            ============================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    🔧 Service Provider Details
+                </div>
+
+
+                {% if booking["provider_name"] %}
+
+                    <div class="provider-info">
+
+
+                        <!-- PROVIDER NAME -->
+
+                        <div class="provider-row">
+
+                            <strong>
+                                Name:
+                            </strong>
+
+                            <span>
+                                {{ booking["provider_name"] }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- PROVIDER PHONE -->
+
+                        {% if booking["provider_phone"] %}
+
+                            <div class="provider-row">
+
+                                <strong>
+                                    Phone:
+                                </strong>
+
+                                <span>
+                                    {{ booking["provider_phone"] }}
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- PROVIDER EMAIL -->
+
+                        {% if booking["provider_email"] %}
+
+                            <div class="provider-row">
+
+                                <strong>
+                                    Email:
+                                </strong>
+
+                                <span>
+                                    {{ booking["provider_email"] }}
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- PROVIDER STATUS -->
+
+                        <div class="provider-row">
+
+                            <strong>
+                                Status:
+                            </strong>
+
+
+                            {% if booking["provider_status"] == "Completed" %}
+
+                                <span class="completed">
+                                    🟢 Completed
+                                </span>
+
+
+                            {% elif booking["provider_status"] == "Accepted" %}
+
+                                <span class="accepted">
+                                    🔵 Accepted
+                                </span>
+
+
+                            {% elif booking["provider_status"] == "Rejected" %}
+
+                                <span class="cancelled">
+                                    🔴 Rejected
+                                </span>
+
+
+                            {% elif booking["provider_status"] == "Assigned" %}
+
+                                <span class="accepted">
+                                    🔵 Assigned
+                                </span>
+
+
+                            {% elif booking["provider_status"] == "Cancelled" %}
+
+                                <span class="cancelled">
+                                    🔴 Cancelled
+                                </span>
+
+
+                            {% else %}
+
+                                <span class="pending">
+                                    🟡 {{ booking["provider_status"] }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                {% elif booking["provider_id"] %}
+
+                    <div class="provider-info">
+
+                        <span class="not-assigned">
+
+                            Provider #{{ booking["provider_id"] }}
+
+                        </span>
+
+                    </div>
+
+
+                {% else %}
+
+                    <div class="provider-info">
+
+                        <span class="not-assigned">
+
+                            Not Assigned
+
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ==============================
+                 BACK BUTTON
+            ============================== -->
+
+            <a href="{{ url_for('admin') }}"
+               class="back-btn">
+
+                ⬅️ Back to Admin Dashboard
+
+            </a>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ==============================
+         LEAFLET JAVASCRIPT
+    ============================== -->
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+    {% if booking["latitude"] and booking["longitude"] %}
+
+    <script>
+
+        // Get booking coordinates
+
+        const latitude =
+            parseFloat("{{ booking['latitude'] }}");
+
+        const longitude =
+            parseFloat("{{ booking['longitude'] }}");
+
+
+        // Create map
+
+        const adminBookingMap =
+            L.map("adminBookingMap").setView(
+                [latitude, longitude],
+                16
+            );
+
+
+        // OpenStreetMap tiles
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution:
+                    "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(adminBookingMap);
+
+
+        // Location marker
+
+        const marker =
+            L.marker(
+                [latitude, longitude]
+            ).addTo(adminBookingMap);
+
+
+        // Marker popup
+
+        marker.bindPopup(
+            "📍 Customer Service Location"
+        ).openPopup();
+
+    </script>
+
+    {% endif %}
+
+
+</body>
+
+</html>

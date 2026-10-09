@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book a Service - FixMate</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav>
+        <h2>FixMate</h2>
+
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/#services">Services</a></li>
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#contact">Contact</a></li>
+            <li><a href="/mybookings">My Bookings</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- ================= BOOKING FORM ================= -->
+
+    <div class="booking-container">
+
+        <div class="booking-box">
+
+            <h1>Book a Service 🔧</h1>
+
+            <p class="booking-subtitle">
+                Fill in your details to book a service.
+            </p>
+
+            <form method="POST" action="/book">
+
+                <label>Name</label>
+
+                <input type="text"
+                       name="name"
+                       placeholder="Enter your name"
+                       required>
+
+
+                <label>Phone Number</label>
+
+                <input type="tel"
+                       name="phone"
+                       placeholder="Enter your phone number"
+                       required>
+
+
+                <label>Address</label>
+
+                <textarea name="address"
+                          placeholder="Enter your address"
+                          required></textarea>
+
+
+                <label>Select Service</label>
+
+                <select name="service" required>
+
+                    <option value="">-- Select Service --</option>
+
+                    <option value="Electrician">
+                        ⚡ Electrician
+                    </option>
+
+                    <option value="Plumber">
+                        🧑‍🔧 Plumber
+                    </option>
+
+                    <option value="Painter">
+                        🎨 Painter
+                    </option>
+
+                    <option value="Carpenter">
+                        🪚 Carpenter
+                    </option>
+
+                    <option value="AC Repair">
+                        ❄️ AC Repair
+                    </option>
+
+                    <option value="House Cleaning">
+                        🧹 House Cleaning
+                    </option>
+
+                    <option value="Appliance Repair">
+                        🔧 Appliance Repair
+                    </option>
+
+                    <option value="Home Shifting">
+                        🚚 Home Shifting
+                    </option>
+
+                    <option value="Gardening">
+                        🌳 Gardening
+                    </option>
+
+                    <option value="Locksmith">
+                        🔑 Locksmith
+                    </option>
+
+                </select>
+
+
+                <label>Preferred Date</label>
+
+                <input type="date"
+                       name="date"
+                       required>
+
+
+                <label>Preferred Time</label>
+
+                <input type="time"
+                       name="time"
+                       required>
+
+
+                <button type="submit">
+                    Confirm Booking
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

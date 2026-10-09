@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FixMate - Local Service Finder</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        <span>🔧</span> FixMate
+    </div>
+
+    <ul class="nav-links">
+
+        <li>
+            <a href="/">Home</a>
+        </li>
+
+        <li>
+            <a href="#services">Services</a>
+        </li>
+
+        <li>
+            <a href="#how-it-works">How It Works</a>
+        </li>
+
+        <li>
+            <a href="#about">About</a>
+        </li>
+
+        <li>
+            <a href="#contact">Contact</a>
+        </li>
+
+        <li>
+            <a href="/login" class="login-btn">
+                Login
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            🏠 Your Home Service Partner
+        </div>
+
+        <h1>
+            Reliable Services,
+            <span>Right at Your Doorstep.</span>
+        </h1>
+
+        <p>
+            Find trusted professionals for electrical work,
+            plumbing, painting, cleaning, repairs and more.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="/login" class="hero-btn">
+                Book a Service →
+            </a>
+
+            <a href="#services" class="secondary-btn">
+                Explore Services
+            </a>
+
+        </div>
+
+        <div class="hero-features">
+
+            <div>
+                <strong>10+</strong>
+                <small>Services</small>
+            </div>
+
+            <div>
+                <strong>Easy</strong>
+                <small>Booking</small>
+            </div>
+
+            <div>
+                <strong>Fast</strong>
+                <small>Service</small>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SERVICES ================= -->
+
+<section id="services" class="services-section">
+
+    <div class="section-heading">
+
+        <span class="section-label">
+            WHAT WE OFFER
+        </span>
+
+        <h2>Our Popular Services</h2>
+
+        <p>
+            Everything you need for your home,
+            available through one simple platform.
+        </p>
+
+    </div>
+
+
+    <div class="service-container">
+
+
+        <!-- ELECTRICIAN -->
+
+        <div class="card">
+
+            <div class="service-icon">⚡</div>
+
+            <h3>Electrician</h3>
+
+            <p>
+                Expert electrical repair and installation
+                for your home.
+            </p>
+
+            <a href="/login" class="card-btn">
+                Book Service →
+            </a>
+
+        </div>
+
+
+        <!-- PLUMBER -->
+
+        <div class="card">
+
+            <div class="service-icon">🧑‍🔧</div>
+
+            <h3>Plumber</h3>
+
+            <p>
+                Quick and convenient plumbing services
+                at your doorstep.
+            </p>
+
+            <a href="/login" class="card-btn">
+                Book Service →
+            </a>
+
+        </div>
+
+
+        <!-- PAINTER -->
+
+        <div class="card">
+
+            <div class="service-icon">🎨</div>
+
+            <h3>Painter</h3>
+
+            <p>
+                Professional painting solutions for
+                beautiful homes.
+            </p>
+
+            <a href="/login" class="card-btn">
+                Book Service →
+            </a>
+
+        </div>
+
+
+        <!-- CARPENTER -->
+
+        <div class="card">
+
+            <div class="service-icon">🪚</div>
+
+            <h3>Carpenter</h3>
+
+            <p>
+                Furniture repair, installation and
+                woodworking services.
+            </p>
+
+            <a href="/login" class="card-btn">
+                Book Service →
+            </a>
+
+        </div>
+
+
+        <!-- AC REPAIR -->
+
+        <div class="card">
+
+            <div class="service-icon">❄️</div>
+
+            <h3>AC Repair</h3>
+
+            <p>
+                AC installation, maintenance and
+                repair services.
+            </p>
+
+            <a href="/login" class="card-btn">
+                Book Service →
+            </a>
+
+        </div>
+
+
+        <!-- HOUSE CLEANING -->
+
+        <div class="card">
+
+            <div class="service-icon">🧹</div>
+
+            <h3>House Cleaning</h3>
+
+            <p>
+                Professional cleaning services
+                for a fresh and clean home.
+            </p>
+
+            <a href="/login" class="card-btn">
+                Book Service →
+            </a>
+
+        </div>
+
+
+        <!-- APPLIANCE REPAIR -->
+
+        <div class="card">
+
+            <div class="service-icon">🔧</div>
+
+            <h3>Appliance Repair</h3>
+
+            <p>
+                Repair services for TV, fridge,
+                washing machine and more.
+            </p>
+
+            <a href="/login" class="card-btn">
+                Book Service →
+            </a>
+
+        </div>
+
+
+        <!-- HOME SHIFTING -->
+
+        <div class="card">
+
+            <div class="service-icon">🚚</div>
+
+            <h3>Home Shifting</h3>
+
+            <p>
+                Safe and reliable packing and
+                moving assistance.
+            </p>
+
+            <a href="/login" class="card-btn">
+                Book Service →
+            </a>
+
+        </div>
+
+
+        <!-- GARDENING -->
+
+        <div class="card">
+
+            <div class="service-icon">🌳</div>
+
+            <h3>Gardening</h3>
+
+            <p>
+                Garden maintenance and landscaping
+                services.
+            </p>
+
+            <a href="/login" class="card-btn">
+                Book Service →
+            </a>
+
+        </div>
+
+
+        <!-- LOCKSMITH -->
+
+        <div class="card">
+
+            <div class="service-icon">🔑</div>
+
+            <h3>Locksmith</h3>
+
+            <p>
+                Door lock installation and
+                key repair services.
+            </p>
+
+            <a href="/login" class="card-btn">
+                Book Service →
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ================= HOW IT WORKS ================= -->
+
+<section id="how-it-works" class="how-section">
+
+    <div class="section-heading">
+
+        <span class="section-label">
+            SIMPLE PROCESS
+        </span>
+
+        <h2>How FixMate Works</h2>
+
+        <p>
+            Getting the help you need takes only a few simple steps.
+        </p>
+
+    </div>
+
+
+    <div class="steps-container">
+
+
+        <div class="step-card">
+
+            <div class="step-number">
+                01
+            </div>
+
+            <div class="step-icon">
+                🔐
+            </div>
+
+            <h3>Create Account</h3>
+
+            <p>
+                Register on FixMate and create your
+                personal account.
+            </p>
+
+        </div>
+
+
+        <div class="step-card">
+
+            <div class="step-number">
+                02
+            </div>
+
+            <div class="step-icon">
+                🔎
+            </div>
+
+            <h3>Choose a Service</h3>
+
+            <p>
+                Select the home service that
+                you need.
+            </p>
+
+        </div>
+
+
+        <div class="step-card">
+
+            <div class="step-number">
+                03
+            </div>
+
+            <div class="step-icon">
+                📅
+            </div>
+
+            <h3>Book a Service</h3>
+
+            <p>
+                Enter your details and choose
+                your preferred date and time.
+            </p>
+
+        </div>
+
+
+        <div class="step-card">
+
+            <div class="step-number">
+                04
+            </div>
+
+            <div class="step-icon">
+                🛠️
+            </div>
+
+            <h3>Get It Done</h3>
+
+            <p>
+                Your service request is ready
+                to be managed through FixMate.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+
+<section id="about" class="about-section">
+
+    <div class="about-container">
+
+        <div class="about-content">
+
+            <span class="section-label">
+                ABOUT FIXMATE
+            </span>
+
+            <h2>
+                Making Home Services
+                Simple & Convenient
+            </h2>
+
+            <p>
+                FixMate is a local service finder platform
+                designed to make everyday home maintenance
+                easier.
+            </p>
+
+            <p>
+                Instead of searching for different service
+                providers separately, users can manage
+                their service bookings from one convenient
+                platform.
+            </p>
+
+            <a href="/login" class="about-btn">
+                Get Started →
+            </a>
+
+        </div>
+
+
+        <div class="about-cards">
+
+            <div class="about-card">
+
+                <div class="about-icon">
+                    🔍
+                </div>
+
+                <h3>Easy to Find</h3>
+
+                <p>
+                    Find different home services
+                    from one platform.
+                </p>
+
+            </div>
+
+
+            <div class="about-card">
+
+                <div class="about-icon">
+                    ⚡
+                </div>
+
+                <h3>Quick Booking</h3>
+
+                <p>
+                    Book the service you need
+                    quickly and conveniently.
+                </p>
+
+            </div>
+
+
+            <div class="about-card">
+
+                <div class="about-icon">
+                    🛠️
+                </div>
+
+                <h3>Reliable Services</h3>
+
+                <p>
+                    Manage your service requests
+                    easily through FixMate.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CTA ================= -->
+
+<section class="cta-section">
+
+    <div>
+
+        <h2>
+            Need a Service at Home?
+        </h2>
+
+        <p>
+            Let FixMate help you find the service you need.
+        </p>
+
+    </div>
+
+    <a href="/login" class="cta-btn">
+        Book Now →
+    </a>
+
+</section>
+
+
+<!-- ================= CONTACT ================= -->
+
+<section id="contact" class="contact-section">
+
+    <div class="contact-content">
+
+        <span class="section-label">
+            GET IN TOUCH
+        </span>
+
+        <h2>Need Help?</h2>
+
+        <p>
+            Login to FixMate and book the service
+            you need for your home.
+        </p>
+
+        <a href="/login" class="contact-btn">
+            Login to FixMate →
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="footer-content">
+
+        <div>
+
+            <h2>🔧 FixMate</h2>
+
+            <p>
+                Your local home service partner.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <p>
+                © 2026 FixMate. All Rights Reserved.
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+</body>
+
+</html>

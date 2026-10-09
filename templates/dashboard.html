@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FixMate | Dashboard</title>
+
+    <style>
+        *{
+            box-sizing:border-box;
+            margin:0;
+            padding:0;
+        }
+
+        body{
+            font-family:Arial,Helvetica,sans-serif;
+            background:#f4f7fb;
+            color:#172033;
+            min-height:100vh;
+        }
+
+        .navbar{
+            height:68px;
+            background:#1f4cff;
+            color:white;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:0 6%;
+            box-shadow:0 3px 12px rgba(31,76,255,.18);
+        }
+
+        .brand{
+            font-size:23px;
+            font-weight:800;
+            text-decoration:none;
+            color:white;
+            letter-spacing:.2px;
+        }
+
+        .navlinks{
+            display:flex;
+            gap:26px;
+            align-items:center;
+        }
+
+        .navlinks a{
+            color:white;
+            text-decoration:none;
+            font-size:15px;
+            font-weight:600;
+            opacity:.96;
+        }
+
+        .navlinks a:hover{
+            opacity:1;
+            text-decoration:underline;
+        }
+
+        .logout{
+            background:white;
+            color:#1f4cff!important;
+            padding:9px 15px;
+            border-radius:9px;
+            text-decoration:none!important;
+        }
+
+        .container{
+            width:88%;
+            max-width:1180px;
+            margin:0 auto;
+            padding:38px 0 55px;
+        }
+
+        /* FLASH SUCCESS MESSAGE */
+        .flash-message{
+            width:100%;
+            background:#d1fae5;
+            color:#065f46;
+            border:1px solid #6ee7b7;
+            padding:13px 18px;
+            border-radius:10px;
+            margin-bottom:20px;
+            text-align:center;
+            font-size:14px;
+            font-weight:700;
+            box-shadow:0 3px 10px rgba(0,0,0,.05);
+        }
+
+        .flash-message.error{
+            background:#fee2e2;
+            color:#991b1b;
+            border-color:#fca5a5;
+        }
+
+        .flash-message.success{
+            background:#d1fae5;
+            color:#065f46;
+            border-color:#6ee7b7;
+        }
+
+        /* WELCOME */
+        .welcome{
+            background:linear-gradient(135deg,#1f4cff,#4169ff);
+            border-radius:20px;
+            padding:32px 34px;
+            color:white;
+            box-shadow:0 12px 30px rgba(31,76,255,.18);
+            margin-bottom:28px;
+        }
+
+        .welcome h1{
+            font-size:30px;
+            margin-bottom:9px;
+        }
+
+        .welcome p{
+            font-size:16px;
+            opacity:.92;
+            line-height:1.6;
+        }
+
+        /* SECTION TITLE */
+        .section-title{
+            font-size:21px;
+            margin:28px 0 15px;
+        }
+
+        /* BOOKING STATS */
+        .stats{
+            display:grid;
+            grid-template-columns:repeat(4,1fr);
+            gap:16px;
+        }
+
+        .stat{
+            background:white;
+            border-radius:16px;
+            padding:22px;
+            box-shadow:0 5px 20px rgba(23,32,51,.07);
+            border:1px solid #e9edf5;
+            position:relative;
+            overflow:hidden;
+        }
+
+        .stat:after{
+            content:"";
+            position:absolute;
+            right:-18px;
+            top:-18px;
+            width:65px;
+            height:65px;
+            border-radius:50%;
+            background:#eef2ff;
+        }
+
+        .stat-icon{
+            font-size:25px;
+            margin-bottom:13px;
+        }
+
+        .stat-number{
+            font-size:30px;
+            font-weight:800;
+            margin-bottom:5px;
+        }
+
+        .stat-label{
+            color:#6b7485;
+            font-size:14px;
+            font-weight:600;
+        }
+
+        /* RECENT BOOKINGS */
+        .card{
+            background:white;
+            border:1px solid #e9edf5;
+            border-radius:17px;
+            box-shadow:0 5px 20px rgba(23,32,51,.06);
+            overflow:hidden;
+        }
+
+        .card-head{
+            padding:20px 22px;
+            border-bottom:1px solid #edf0f5;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .card-head h2{
+            font-size:18px;
+        }
+
+        .card-head a{
+            color:#1f4cff;
+            text-decoration:none;
+            font-size:14px;
+            font-weight:700;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th,
+        td{
+            text-align:left;
+            padding:15px 18px;
+            border-bottom:1px solid #f0f2f6;
+            font-size:14px;
+        }
+
+        th{
+            color:#70798a;
+            background:#fafbfe;
+            font-size:12px;
+            text-transform:uppercase;
+            letter-spacing:.4px;
+        }
+
+        tr:last-child td{
+            border-bottom:0;
+        }
+
+        .booking-id{
+            font-weight:800;
+            color:#1f4cff;
+        }
+
+        .service{
+            font-weight:700;
+        }
+
+        .status{
+            display:inline-block;
+            padding:6px 10px;
+            border-radius:999px;
+            font-size:12px;
+            font-weight:700;
+            background:#eef2ff;
+            color:#3152c9;
+        }
+
+        .status.completed{
+            background:#eaf8ef;
+            color:#1c7a3d;
+        }
+
+        .status.pending{
+            background:#fff6df;
+            color:#9a6900;
+        }
+
+        .status.cancelled{
+            background:#ffecec;
+            color:#bd3030;
+        }
+
+        /* QUICK ACTIONS BELOW RECENT BOOKINGS */
+        .quick-card{
+            margin-top:22px;
+        }
+
+        .quick{
+            padding:20px;
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:14px;
+        }
+
+        /* ALL QUICK ACTION BUTTONS BLUE */
+        .quick a{
+            display:block;
+            text-decoration:none;
+            background:#1f4cff;
+            color:white;
+            border:1px solid #1f4cff;
+            border-radius:11px;
+            padding:15px 14px;
+            font-weight:700;
+            font-size:14px;
+            text-align:center;
+            transition:0.2s ease;
+        }
+
+        .quick a:hover{
+            background:#1539c7;
+            color:white;
+            border-color:#1539c7;
+            transform:translateY(-1px);
+        }
+
+        .empty{
+            padding:35px 20px;
+            text-align:center;
+            color:#737d8f;
+            font-size:14px;
+        }
+
+        /* FOOTER */
+        .footer{
+            text-align:center;
+            color:#8a93a3;
+            font-size:13px;
+            padding:10px 0 28px;
+        }
+
+        /* TABLET */
+        @media(max-width:850px){
+
+            .stats{
+                grid-template-columns:repeat(2,1fr);
+            }
+
+            .quick{
+                grid-template-columns:1fr;
+            }
+
+            .navlinks{
+                gap:12px;
+            }
+
+            .navlinks a:not(.logout){
+                display:none;
+            }
+        }
+
+        /* MOBILE */
+        @media(max-width:520px){
+
+            .container{
+                width:94%;
+                padding-top:22px;
+            }
+
+            .navbar{
+                padding:0 4%;
+            }
+
+            .welcome{
+                padding:25px 22px;
+            }
+
+            .welcome h1{
+                font-size:24px;
+            }
+
+            .stats{
+                grid-template-columns:1fr 1fr;
+            }
+
+            .stat{
+                padding:17px;
+            }
+
+            .stat-number{
+                font-size:25px;
+            }
+
+            th,
+            td{
+                padding:12px 10px;
+                font-size:12px;
+            }
+
+            .hide-mobile{
+                display:none;
+            }
+
+            .quick{
+                grid-template-columns:1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <a href="/dashboard" class="brand">
+        🔧 FixMate
+    </a>
+
+    <div class="navlinks">
+
+        <a href="/dashboard">
+            Home
+        </a>
+
+        <a href="/book">
+            Services
+        </a>
+
+        <a href="/mybookings">
+            My Bookings
+        </a>
+
+        <a href="/profile">
+            Profile
+        </a>
+
+        <a href="/logout" class="logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+
+    <!-- FLASH SUCCESS / ERROR MESSAGE -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- WELCOME -->
+
+    <section class="welcome">
+
+        <div>
+
+            <h1>
+                👋 Welcome, {{ user_name }}!
+            </h1>
+
+            <p>
+                Manage your FixMate service bookings easily from your dashboard.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- BOOKING OVERVIEW -->
+
+    <h2 class="section-title">
+        📊 Booking Overview
+    </h2>
+
+
+    <section class="stats">
+
+        <div class="stat">
+
+            <div class="stat-icon">
+                📋
+            </div>
+
+            <div class="stat-number">
+                {{ total_bookings }}
+            </div>
+
+            <div class="stat-label">
+                Total Bookings
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">
+                ⏳
+            </div>
+
+            <div class="stat-number">
+                {{ pending_bookings }}
+            </div>
+
+            <div class="stat-label">
+                Pending
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">
+                ✅
+            </div>
+
+            <div class="stat-number">
+                {{ completed_bookings }}
+            </div>
+
+            <div class="stat-label">
+                Completed
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">
+                ❌
+            </div>
+
+            <div class="stat-number">
+                {{ cancelled_bookings }}
+            </div>
+
+            <div class="stat-label">
+                Cancelled
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RECENT BOOKINGS -->
+
+    <h2 class="section-title">
+        📋 Recent Bookings
+    </h2>
+
+
+    <section class="card">
+
+        <div class="card-head">
+
+            <h2>
+                Recent Bookings
+            </h2>
+
+            <a href="/mybookings">
+                View All →
+            </a>
+
+        </div>
+
+
+        {% if recent_bookings %}
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Service
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th class="hide-mobile">
+                        Time
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for booking in recent_bookings %}
+
+                <tr>
+
+                    <td>
+                        <span class="booking-id">
+                            #{{ booking['id'] }}
+                        </span>
+                    </td>
+
+                    <td class="service">
+                        {{ booking['service'] }}
+                    </td>
+
+                    <td>
+                        {{ booking['date'] }}
+                    </td>
+
+                    <td class="hide-mobile">
+                        {{ booking['time'] }}
+                    </td>
+
+                    <td>
+
+                        <span class="status
+                            {% if booking['status'] == 'Completed' %}
+                                completed
+                            {% elif booking['status'] == 'Pending' %}
+                                pending
+                            {% elif booking['status'] == 'Cancelled' %}
+                                cancelled
+                            {% endif %}
+                        ">
+
+                            {{ booking['status'] }}
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty">
+            You don't have any bookings yet.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <section class="card quick-card">
+
+        <div class="card-head">
+
+            <h2>
+                ⚡ Quick Actions
+            </h2>
+
+        </div>
+
+
+        <div class="quick">
+
+            <a href="/book" class="primary">
+                📅 Book a Service
+            </a>
+
+            <a href="/mybookings">
+                📋 My Bookings
+            </a>
+
+            <a href="/profile">
+                👤 My Profile
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- FOOTER -->
+
+<div class="footer">
+    © FixMate · Local Service Finder
+</div>
+
+
+</body>
+</html>

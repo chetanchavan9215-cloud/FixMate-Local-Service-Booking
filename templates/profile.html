@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Profile - FixMate</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<!-- ================= NAVBAR ================= -->
+<nav>
+    <h2>FixMate</h2>
+    <ul>
+        <li>
+            <a href="/dashboard">
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="/book">
+                Book Service
+            </a>
+        </li>
+        <li>
+            <a href="/mybookings">
+                My Bookings
+            </a>
+        </li>
+        <li>
+            <a href="/profile">
+                Profile
+            </a>
+        </li>
+        <li>
+            <a href="/logout">
+                Logout
+            </a>
+        </li>
+    </ul>
+</nav>
+<!-- ================= PROFILE ================= -->
+<div class="login-container">
+    <div class="login-box">
+        <h1>
+            👤 My Profile
+        </h1>
+        <p>
+            View and manage your FixMate account details.
+        </p>
+        <hr>
+        <!-- ================= USER DETAILS ================= -->
+        <div class="profile-details">
+            <p>
+                <strong>👤 Name:</strong>
+                {{ user[1] }}
+            </p>
+            <p>
+                <strong>📧 Email:</strong>
+                {{ user[2] }}
+            </p>
+        </div>
+        <hr>
+        <!-- ================= ACTION BUTTONS ================= -->
+        <div class="dashboard-actions">
+            <!-- EDIT PROFILE -->
+            <a href="/edit-profile">
+                <button type="button">
+                    ✏️ Edit Profile
+                </button>
+            </a>
+            <!-- CHANGE PASSWORD -->
+            <a href="/change-password">
+                <button type="button">
+                    🔒 Change Password
+                </button>
+            </a>
+        </div>
+        <br>
+        <!-- ================= BACK TO DASHBOARD ================= -->
+        <a href="/dashboard">
+            <button type="button">
+                🏠 Back to Dashboard
+            </button>
+        </a>
+    </div>
+</div>
+</body>
+</html>

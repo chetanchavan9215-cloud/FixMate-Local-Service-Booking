@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FixMate Register</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+
+    <h2>FixMate</h2>
+
+    <ul>
+
+        <li>
+            <a href="/">
+                Home
+            </a>
+        </li>
+
+        <li>
+            <a href="/login">
+                Login
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<!-- ================= REGISTER ================= -->
+
+<div class="login-container">
+
+    <form class="login-box"
+          action="/register"
+          method="POST"
+          onsubmit="return validateRegisterForm()">
+
+
+        <h2>
+            📝 Create Account
+        </h2>
+
+
+        <p>
+            Create your FixMate account
+        </p>
+
+
+        <!-- ================= FLASK FLASH MESSAGES ================= -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="flash-message {{ category }}">
+
+                        {{ message }}
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- ================= JAVASCRIPT ERROR MESSAGE ================= -->
+
+        <p id="error-message"
+           style="display: none;">
+
+        </p>
+
+
+        <!-- ================= NAME ================= -->
+
+        <label for="name">
+
+            Full Name
+
+        </label>
+
+        <input type="text"
+               id="name"
+               name="name"
+               placeholder="Enter Full Name"
+               minlength="3"
+               required>
+
+
+        <!-- ================= EMAIL ================= -->
+
+        <label for="email">
+
+            Email
+
+        </label>
+
+        <input type="email"
+               id="email"
+               name="email"
+               placeholder="Enter Email"
+               required>
+
+
+        <!-- ================= PASSWORD ================= -->
+
+        <label for="password">
+
+            Password
+
+        </label>
+
+        <input type="password"
+               id="password"
+               name="password"
+               placeholder="Enter Password (Minimum 6 characters)"
+               minlength="6"
+               required>
+
+
+        <!-- ================= CONFIRM PASSWORD ================= -->
+
+        <label for="confirm_password">
+
+            Confirm Password
+
+        </label>
+
+        <input type="password"
+               id="confirm_password"
+               name="confirm_password"
+               placeholder="Confirm Password"
+               minlength="6"
+               required>
+
+
+        <!-- ================= REGISTER BUTTON ================= -->
+
+        <button type="submit">
+
+            📝 Register
+
+        </button>
+
+
+        <p>
+
+            Already have an account?
+
+            <a href="/login">
+
+                Login
+
+            </a>
+
+        </p>
+
+
+    </form>
+
+</div>
+
+
+<!-- ================= JAVASCRIPT VALIDATION ================= -->
+
+<script>
+
+function validateRegisterForm() {
+
+    const name =
+        document.getElementById("name").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const confirmPassword =
+        document.getElementById("confirm_password").value;
+
+    const errorMessage =
+        document.getElementById("error-message");
+
+
+    errorMessage.style.display = "none";
+
+
+    // ================= NAME VALIDATION =================
+
+    if (name.length < 3) {
+
+        errorMessage.innerText =
+            "❌ Name must contain at least 3 characters.";
+
+        errorMessage.style.display = "block";
+
+        return false;
+
+    }
+
+
+    // ================= PASSWORD LENGTH VALIDATION =================
+
+    if (password.length < 6) {
+
+        errorMessage.innerText =
+            "❌ Password must contain at least 6 characters.";
+
+        errorMessage.style.display = "block";
+
+        return false;
+
+    }
+
+
+    // ================= PASSWORD MATCH VALIDATION =================
+
+    if (password !== confirmPassword) {
+
+        errorMessage.innerText =
+            "❌ Password and Confirm Password do not match.";
+
+        errorMessage.style.display = "block";
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Bookings - FixMate</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        /* ================= MY BOOKINGS PAGE ================= */
+        .mybookings-page {
+            min-height: calc(100vh - 70px);
+            padding: 50px 5%;
+            background: #f5f7fc;
+        }
+
+        .mybookings-wrapper {
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        /* ================= HEADER ================= */
+        .bookings-header {
+            background: linear-gradient(
+                135deg,
+                #1f4cff,
+                #1739bd
+            );
+
+            color: white;
+            padding: 35px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 12px 30px rgba(31, 76, 255, 0.18);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .bookings-header h1 {
+            color: white;
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .bookings-header p {
+            color: #e8edff;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .bookings-header-icon {
+            font-size: 65px;
+        }
+
+        /* ================= SEARCH CARD ================= */
+        .search-card {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            border: 1px solid #e6eaf3;
+
+            box-shadow:
+                0 6px 18px rgba(24, 39, 75, 0.06);
+
+            margin-bottom: 25px;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 220px 120px;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-form input,
+        .search-form select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px 14px;
+
+            border: 1px solid #d9deea;
+            border-radius: 9px;
+
+            font-size: 14px;
+            outline: none;
+            background: white;
+        }
+
+        .search-form input:focus,
+        .search-form select:focus {
+            border-color: #1f4cff;
+
+            box-shadow:
+                0 0 0 3px rgba(31, 76, 255, 0.10);
+        }
+
+        .search-form button {
+            width: 100%;
+            padding: 13px;
+
+            border: none;
+            border-radius: 9px;
+
+            background: #1f4cff;
+            color: white;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .search-form button:hover {
+            background: #0d2fb3;
+            transform: translateY(-2px);
+        }
+
+        /* ================= BOOKINGS CARD ================= */
+        .bookings-card {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+
+            border: 1px solid #e6eaf3;
+
+            box-shadow:
+                0 6px 20px rgba(24, 39, 75, 0.06);
+
+            overflow: hidden;
+        }
+
+        .bookings-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+        .bookings-card-header h2 {
+            margin: 0;
+            color: #172554;
+            font-size: 22px;
+        }
+
+        /* ================= TABLE ================= */
+        .my-bookings-table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .my-bookings-table {
+            width: 100%;
+            min-width: 1050px;
+            border-collapse: collapse;
+        }
+
+        .my-bookings-table th {
+            background: #f5f7fc;
+            color: #475467;
+
+            padding: 14px 12px;
+
+            text-align: center;
+
+            font-size: 13px;
+            font-weight: bold;
+
+            border-bottom: 1px solid #e4e7ec;
+
+            white-space: nowrap;
+        }
+
+        .my-bookings-table td {
+            padding: 15px 12px;
+
+            text-align: center;
+
+            color: #475467;
+            font-size: 14px;
+
+            border-bottom: 1px solid #edf0f5;
+
+            vertical-align: middle;
+        }
+
+        .my-bookings-table tbody tr {
+            transition: 0.2s;
+        }
+
+        .my-bookings-table tbody tr:hover {
+            background: #fafbff;
+        }
+
+        /* ================= BOOKING ID ================= */
+        .booking-id {
+            font-weight: bold;
+            color: #1f4cff;
+        }
+
+        /* ================= STATUS ================= */
+        .booking-status {
+            display: inline-block;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
+
+        .booking-status.pending {
+            background: #fff5d6;
+            color: #a66b00;
+        }
+
+        .booking-status.completed {
+            background: #e5f7ec;
+            color: #16743b;
+        }
+
+        .booking-status.cancelled {
+            background: #ffe9e7;
+            color: #c62828;
+        }
+
+        /* ================= ACTIONS ================= */
+        .booking-actions {
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 7px;
+        }
+
+        .booking-actions a {
+            text-decoration: none;
+        }
+
+        .action-btn {
+            border: none;
+
+            border-radius: 7px;
+
+            padding: 8px 12px;
+
+            font-size: 12px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+
+            min-width: 105px;
+        }
+
+        .view-btn {
+            background: #eef3ff;
+            color: #1f4cff;
+        }
+
+        .view-btn:hover {
+            background: #1f4cff;
+            color: white;
+        }
+
+        .edit-btn {
+            background: #fff5df;
+            color: #a66b00;
+        }
+
+        .edit-btn:hover {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #fff0ef;
+            color: #d92d20;
+        }
+
+        .cancel-btn:hover {
+            background: #d92d20;
+            color: white;
+        }
+
+        /* ================= EMPTY ================= */
+        .empty-bookings {
+            text-align: center;
+            padding: 55px 20px;
+        }
+
+        .empty-icon {
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        .empty-bookings h3 {
+            margin: 5px 0 8px;
+            color: #172554;
+            font-size: 20px;
+        }
+
+        .empty-bookings p {
+            color: #667085;
+            margin: 0;
+        }
+
+        .empty-bookings a {
+            display: inline-block;
+
+            margin-top: 18px;
+
+            padding: 11px 20px;
+
+            background: #1f4cff;
+            color: white;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .empty-bookings a:hover {
+            background: #0d2fb3;
+        }
+
+        /* ================= BACK BUTTON ================= */
+        .back-dashboard {
+            margin-top: 22px;
+            text-align: center;
+        }
+
+        .back-dashboard a {
+            display: inline-block;
+
+            padding: 11px 22px;
+
+            border-radius: 8px;
+
+            background: #eef3ff;
+            color: #1f4cff;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .back-dashboard a:hover {
+            background: #1f4cff;
+            color: white;
+        }
+
+        /* ================= MOBILE ================= */
+        @media (max-width: 900px) {
+
+            .search-form {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .search-form button {
+                grid-column: 1 / -1;
+            }
+
+            .bookings-header {
+                padding: 28px;
+            }
+
+            .bookings-header-icon {
+                font-size: 50px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .mybookings-page {
+                padding: 30px 15px;
+            }
+
+            .bookings-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 28px 20px;
+            }
+
+            .bookings-header h1 {
+                font-size: 25px;
+            }
+
+            .bookings-header-icon {
+                font-size: 45px;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+
+            .search-form button {
+                grid-column: auto;
+            }
+
+            .bookings-card {
+                padding: 18px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        <span>🔧</span> FixMate
+    </div>
+
+    <ul class="nav-links">
+
+        <li>
+            <a href="/dashboard">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="/book">
+                Book Service
+            </a>
+        </li>
+
+        <li>
+            <a href="/mybookings">
+                My Bookings
+            </a>
+        </li>
+
+        <li>
+            <a href="/profile">
+                Profile
+            </a>
+        </li>
+
+        <li>
+            <a href="/logout">
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<!-- ================= PAGE ================= -->
+
+<div class="mybookings-page">
+
+    <div class="mybookings-wrapper">
+
+
+        <!-- ================= HEADER ================= -->
+
+        <div class="bookings-header">
+
+            <div>
+
+                <h1>
+                    📋 My Bookings
+                </h1>
+
+                <p>
+                    View and manage all your FixMate service bookings.
+                </p>
+
+            </div>
+
+            <div class="bookings-header-icon">
+                📅
+            </div>
+
+        </div>
+
+
+        <!-- ================= SEARCH ================= -->
+
+        <div class="search-card">
+
+            <form
+                action="/mybookings"
+                method="GET"
+                class="search-form"
+            >
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="🔍 Search by name, service, phone..."
+                    value="{{ search }}"
+                >
+
+
+                <select name="status">
+
+                    <option value="">
+                        All Status
+                    </option>
+
+                    <option
+                        value="Pending"
+                        {% if status == "Pending" %}
+                            selected
+                        {% endif %}
+                    >
+                        🟡 Pending
+                    </option>
+
+                    <option
+                        value="Completed"
+                        {% if status == "Completed" %}
+                            selected
+                        {% endif %}
+                    >
+                        🟢 Completed
+                    </option>
+
+                    <option
+                        value="Cancelled"
+                        {% if status == "Cancelled" %}
+                            selected
+                        {% endif %}
+                    >
+                        🔴 Cancelled
+                    </option>
+
+                </select>
+
+
+                <button type="submit">
+                    🔍 Search
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- ================= BOOKINGS ================= -->
+
+        <div class="bookings-card">
+
+
+            <div class="bookings-card-header">
+
+                <h2>
+                    Your Bookings
+                </h2>
+
+            </div>
+
+
+            {% if bookings %}
+
+                <div class="my-bookings-table-container">
+
+                    <table class="my-bookings-table">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>Service</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+
+                            {% for booking in bookings %}
+
+                                <tr>
+
+
+                                    <!-- ID -->
+
+                                    <td>
+
+                                        <span class="booking-id">
+                                            #{{ booking[0] }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- NAME -->
+
+                                    <td>
+                                        {{ booking[1] }}
+                                    </td>
+
+
+                                    <!-- PHONE -->
+
+                                    <td>
+                                        {{ booking[2] }}
+                                    </td>
+
+
+                                    <!-- ADDRESS -->
+
+                                    <td>
+                                        {{ booking[3] }}
+                                    </td>
+
+
+                                    <!-- SERVICE -->
+
+                                    <td>
+                                        {{ booking[4] }}
+                                    </td>
+
+
+                                    <!-- DATE -->
+
+                                    <td>
+                                        {{ booking[7] }}
+                                    </td>
+
+
+                                    <!-- TIME -->
+
+                                    <td>
+                                        {{ booking[8] }}
+                                    </td>
+
+
+                                    <!-- STATUS -->
+
+                                    <td>
+
+                                        {% if booking[6] == "Pending" %}
+
+                                            <span class="booking-status pending">
+                                                🟡 Pending
+                                            </span>
+
+                                        {% elif booking[6] == "Completed" %}
+
+                                            <span class="booking-status completed">
+                                                🟢 Completed
+                                            </span>
+
+                                        {% elif booking[6] == "Cancelled" %}
+
+                                            <span class="booking-status cancelled">
+                                                🔴 Cancelled
+                                            </span>
+
+                                        {% else %}
+
+                                            {{ booking[6] }}
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- ACTION -->
+
+                                    <td>
+
+                                        <div class="booking-actions">
+
+
+                                            <!-- VIEW -->
+
+                                            <a href="/booking/{{ booking[0] }}">
+
+                                                <button
+                                                    type="button"
+                                                    class="action-btn view-btn"
+                                                >
+                                                    👁️ View Details
+                                                </button>
+
+                                            </a>
+
+
+                                            <!-- PENDING -->
+
+                                            {% if booking[6] == "Pending" %}
+
+
+                                                <!-- EDIT -->
+
+                                                <a href="/edit/{{ booking[0] }}">
+
+                                                    <button
+                                                        type="button"
+                                                        class="action-btn edit-btn"
+                                                    >
+                                                        ✏️ Edit
+                                                    </button>
+
+                                                </a>
+
+
+                                                <!-- CANCEL -->
+
+                                                <form
+                                                    action="/cancel/{{ booking[0] }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('Are you sure you want to cancel this booking?')"
+                                                >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="action-btn cancel-btn"
+                                                    >
+                                                        ❌ Cancel
+                                                    </button>
+
+                                                </form>
+
+
+                                            {% endif %}
+
+
+                                        </div>
+
+                                    </td>
+
+
+                                </tr>
+
+                            {% endfor %}
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+            {% else %}
+
+
+                <!-- ================= EMPTY ================= -->
+
+                <div class="empty-bookings">
+
+                    <div class="empty-icon">
+                        📭
+                    </div>
+
+                    <h3>
+                        No Bookings Found
+                    </h3>
+
+                    <p>
+                        No bookings match your current search or filter.
+                    </p>
+
+                    <a href="/book">
+                        🛠️ Book a Service
+                    </a>
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+        <!-- ================= BACK ================= -->
+
+        <div class="back-dashboard">
+
+            <a href="/dashboard">
+                🏠 Back to Dashboard
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>
